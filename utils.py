@@ -1,4 +1,4 @@
-
+import pandas as pd
 
 class MyUtils:
     
@@ -96,4 +96,19 @@ class MyUtils:
         print 'you are here'
         self.df['diff_amount'] = self.df.AMT_INSTALMENT - self.df.AMT_PAYMENT
         self.df['diff_days'] = self.df.DAYS_INSTALMENT - self.df.DAYS_ENTRY_PAYMENT
+        
+    def groupBySkidCount(self, col):
+        grouped = self.df.groupby('SK_ID_CURR')[str(col)].count()
+        grouped_df = pd.DataFrame(grouped)
+        grouped_df.reset_index(inplace=True, level=0)
+        return grouped_df
+    
+    def groupBySkidMean(self, col):
+        grouped = self.df.groupby('SK_ID_CURR')[str(col)].mean()
+        grouped_df = pd.DataFrame(grouped)
+        grouped_df.reset_index(inplace=True, level=0)
+        return grouped_df
+    
+    def creatingFun(self):
+        print 'This is funny changed again'
     
