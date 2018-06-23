@@ -1,9 +1,11 @@
 import pandas as pd
+description = pd.read_csv('HomeCredit_columns_description.csv')
 
 class MyUtils:
     
     def __init__(self, df):
         self.df = df
+        self.description = description
         
     def get_nulls(self):
         nulls = self.df.isnull().sum() * 100/self.df.shape[0]
@@ -87,10 +89,10 @@ class MyUtils:
         print 'Done!!'
         
     
-    def printColDesc(self, descr):
+    def printColDesc(self):
         for col in self.df.columns:
             if col not in ['SK_ID_CURR', 'SK_ID_PREV']:
-                print col, descr[descr.Row == str(col)].Description.unique()
+                print col, self.description[self.description.Row == str(col)].Description.unique()
     
     def computeInstallPaymentColumns(self):
         print 'you are here'
@@ -111,4 +113,9 @@ class MyUtils:
     
     def creatingFun(self):
         print 'This is funny changed again'
-    
+        
+    def skidCount(self, colname):
+        counts = self.df['SK_ID_CURR'].value_counts().reset_index()
+        counts_df = pd.DataFrame(counts)
+        counts_df.columns = ['SK_ID_CURR',  str(colname) + 'cnt']
+        return counts_df
