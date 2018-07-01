@@ -16,6 +16,10 @@ class MyUtils:
         nulls = self.df.isna().sum() * 100/self.df.shape[0]
         return nulls
     
+    def getNonnullCount(self):
+        nonnull = self.df.count() * 100/self.df.shape[0]
+        return nonnull
+    
     def train_ensembled(self):
         train_zeros = self.df[self.df.TARGET == 0]
         train_ones = self.df[self.df.TARGET == 1]
@@ -89,7 +93,7 @@ class MyUtils:
         print 'Done!!'
         
     
-    def printColDesc(self):
+    def getColDesc(self):
         for col in self.df.columns:
             if col not in ['SK_ID_CURR', 'SK_ID_PREV']:
                 print col, self.description[self.description.Row == str(col)].Description.unique()
@@ -119,3 +123,11 @@ class MyUtils:
         counts_df = pd.DataFrame(counts)
         counts_df.columns = ['SK_ID_CURR',  str(colname) + 'cnt']
         return counts_df
+    
+    def getDfOfMax(self):
+        return self.df[self.df.SK_ID_CURR == self.df.SK_ID_CURR.value_counts().index[0]]
+    
+    def getDfOfMaxPrev(self):
+        return self.df[self.df.SK_ID_PREV == self.df.SK_ID_PREV .value_counts().index[0]]
+    
+    
