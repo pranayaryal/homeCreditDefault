@@ -1,11 +1,13 @@
 import pandas as pd
-description = pd.read_csv('HomeCredit_columns_description.csv')
+descriptions = pd.read_csv('descriptions.csv', encoding='ISO-8859-1')
+
+print ('MyUtils is loading ...')
 
 class MyUtils:
     
     def __init__(self, df):
         self.df = df
-        self.description = description
+        self.description = descriptions
         
     def get_nulls(self):
         nulls = self.df.isnull().sum() * 100/self.df.shape[0]
@@ -24,11 +26,11 @@ class MyUtils:
         train_zeros = self.df[self.df.TARGET == 0]
         train_ones = self.df[self.df.TARGET == 1]
         sampled_indices = np.random.choice(train_zeros.index, size=[11, train_ones.shape[0]], replace=False)
-        print 'shape of sampled indices is %s'%(str(sampled_indices.shape))
+        print ('shape of sampled indices is %s')%(str(sampled_indices.shape))
         ensembled = np.zeros([11, test.shape[0]])
         preds_list = []
         for i in range(11):
-            print 'starting %s th sample'%(str(i))
+            print ('starting %s th sample'%(str(i)))
             new_train = pd.concat([train_zeros.loc[sampled_indices[i]], train_ones])
             train_y = new_train.TARGET
             train_x = new_train.drop(['TARGET', 'SK_ID_CURR'], axis=1)
@@ -58,7 +60,7 @@ class MyUtils:
     
     def randomChoice(self):
         sampled_indices = np.random.choice(self.df.index, size=[11, self.df.shape[0]], replace=False)
-        print 'The shape of sampled_indices array is %s'%(str(sampled_indices.shape))
+        print ('The shape of sampled_indices array is %s')%(str(sampled_indices.shape))
         return sampled_indices
     
     def createEnsemblesUndersample(self):
@@ -71,7 +73,7 @@ class MyUtils:
         ensembled = np.zeros([11, test.shape[0]])
         preds_list = []
         for i in range(11):
-            print 'starting %s th sample'%(str(i))
+            print ('starting %s th sample')%(str(i))
             new_train = pd.concat([train_zeros.loc[sampled_indices[i]], train_ones])
             new_train_merged = new_train.merge(count_skid_df, on='SK_ID_CURR')
             train_y = new_train_merged.TARGET
@@ -90,33 +92,29 @@ class MyUtils:
             pred_actual = preds[:,1]
             ensembled[i] = pred_actual
         #     preds_list.append(pred_actual)
-        print 'Done!!'
+        print ('Done!!')
         
     
     def getColDesc(self):
         for col in self.df.columns:
             if col not in ['SK_ID_CURR', 'SK_ID_PREV']:
-                print col, self.description[self.description.Row == str(col)].Description.unique()
+                print (col, self.description[self.description.Row == str(col)].Description.unique())
     
     def computeInstallPaymentColumns(self):
-        print 'you are here'
+        print ('you are here')
         self.df['diff_amount'] = self.df.AMT_INSTALMENT - self.df.AMT_PAYMENT
         self.df['diff_days'] = self.df.DAYS_INSTALMENT - self.df.DAYS_ENTRY_PAYMENT
         
     def groupBySkidCount(self, col):
-        grouped = self.df.groupby('SK_ID_CURR')[str(col)].count()
-        grouped_df = pd.DataFrame(grouped)
-        grouped_df.reset_index(inplace=True, level=0)
+        grouped_df = self.df.groupby('SK_ID_CURR')[str(col)].count().to_frame().reset_index()
         return grouped_df
     
     def groupBySkidMean(self, col):
-        grouped = self.df.groupby('SK_ID_CURR')[str(col)].mean()
-        grouped_df = pd.DataFrame(grouped)
-        grouped_df.reset_index(inplace=True, level=0)
+        grouped_df = self.df.groupby('SK_ID_CURR')[str(col)].mean().to_frame().reset_index()
         return grouped_df
     
     def creatingFun(self):
-        print 'This is funny changed again'
+        print ('This is funny changed again')
         
     def skidCount(self, colname):
         counts = self.df['SK_ID_CURR'].value_counts().reset_index()
@@ -129,5 +127,14 @@ class MyUtils:
     
     def getDfOfMaxPrev(self):
         return self.df[self.df.SK_ID_PREV == self.df.SK_ID_PREV .value_counts().index[0]]
+    
+    def groupBySkidMax(self, col):
+        return self.df.groupby('SK_ID_CURR')[str(col)].max().to_frame().reset_index()
+    
+    def groupBySkidMin(self, col):
+        return self.df.groupby('SK_ID_CURR')[str(col)].min().to_frame().reset_index()
+    
+    def checkLoad():
+        print('It is loading')
     
     

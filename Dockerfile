@@ -8,7 +8,8 @@ WORKDIR /home/jovyan
 
 RUN pip install -r requirements.txt
 
-CMD ["jupyter-lab]
+
+
 
 
 
