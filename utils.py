@@ -58,6 +58,9 @@ class MyUtils:
         count_skid_df = count_skid_df.rename_axis(None)
         return count_skid_df
     
+    def getDFName(self):
+        
+    
     def randomChoice(self):
         sampled_indices = np.random.choice(self.df.index, size=[11, self.df.shape[0]], replace=False)
         print ('The shape of sampled_indices array is %s')%(str(sampled_indices.shape))
